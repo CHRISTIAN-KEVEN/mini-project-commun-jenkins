@@ -16,9 +16,6 @@ pipeline {
         // stage('Lint') {
         //     agent any
         //     steps {
-        //         script {
-                    
-        //         }
         //     }
         // }
         stage('Build') {
