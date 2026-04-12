@@ -13,14 +13,14 @@ pipeline {
     }
 
     stages {
-        stage('Lint') {
-            agent any
-            steps {
-                script {
+        // stage('Lint') {
+        //     agent any
+        //     steps {
+        //         script {
                     
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
         stage('Build') {
             agent any
             steps {
