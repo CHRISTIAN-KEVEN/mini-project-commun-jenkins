@@ -92,9 +92,9 @@ pipeline {
             }
         }
         stage('Deploy to prod') {
-            when {
-                expression { env.BRANCH_NAME == 'origin/master' }
-            }
+            // when {
+            //     expression { env.BRANCH_NAME == 'origin/master' }
+            // }
             agent any
             steps {
                 sshagent(['SSH_AUTH_KEY']) {
