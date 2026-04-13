@@ -132,11 +132,11 @@ pipeline {
 
         success {
            // We pass the status and the IP values defined in the environment block
-           sendSlackNotification('SUCCESS', env.PROD_ID, env.STAGING_IP)
+           slackNotifier('SUCCESS', env.PROD_ID, env.STAGING_IP)
        }
        failure {
            // We only need to pass the status, IPs are optional defaults
-           sendSlackNotification('FAILURE')
+           slackNotifier('FAILURE')
        }    
     }  
 }
