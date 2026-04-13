@@ -2,7 +2,6 @@ pipeline {
     agent none
     environment {
         DOCKERHUB_AUTH = credentials('DOCKER_HUB_ID')
-        // SSH_AUTH_KEY = credentials('SSH_AUTH_KEY')
         DOCKERHUB_USERNAME = 'kreys326'
         IMAGE_NAME = 'static-website'
         IMAGE_TAG = 'v1'
@@ -13,11 +12,7 @@ pipeline {
     }
 
     stages {
-        // stage('Lint') {
-        //     agent any
-        //     steps {
-        //     }
-        // }
+
         stage('Build') {
             agent any
             steps {
