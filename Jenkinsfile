@@ -146,7 +146,7 @@ pipeline {
      always {
             script {
                  /* Use slackNotifier.groovy from shared library and provide current build result as parameter*/
-                 slackNotifier status.result, env.PROD_ID, env.STAGING_IP
+                 slackNotifier currentBuild.result, env.PROD_ID, env.STAGING_IP
             }
      }
   }  
