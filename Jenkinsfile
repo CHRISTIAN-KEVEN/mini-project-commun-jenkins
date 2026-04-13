@@ -69,7 +69,7 @@ pipeline {
                 expression { env.BRANCH_NAME == 'origin/main' }
             }
             // environment {
-            //     PROD_ID = "51.20.106.82"
+            //     PROD_ID = "51.20.106.82" 
             // }
             agent any
             steps {
