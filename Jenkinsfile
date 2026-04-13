@@ -119,23 +119,35 @@ pipeline {
         }
     }
 
-    post {
+    // post {
     //    success {
     //      slackSend (color: '#00FF00', message: "AJEITOH - SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) - PROD URL => http://${PROD_ID} , STAGING URL => http://${STAGING_IP}")
     //      }
     //   failure {
     //         slackSend (color: '#FF0000', message: "AJEITOH - FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
     //       }  
-        always {
-           success {
-           // We pass the status and the IP values defined in the environment block
-           slackNotifier('SUCCESS', env.PROD_ID, env.STAGING_IP)
-       }
-       failure {
-           // We only need to pass the status, IPs are optional defaults
-           slackNotifier('FAILURE')
-       } 
-        }
+        // always {
+        //    slackNotifier(status.result, env.PROD_ID, env.STAGING_IP)
+
+    //        success {
+    //        // We pass the status and the IP values defined in the environment block
+    //        slackNotifier(status='SUCCESS', env.PROD_ID, env.STAGING_IP)
+    //      }
+    //    failure {
+    //        // We only need to pass the status, IPs are optional defaults
+    //        slackNotifier('FAILURE')
+    //    } 
+    //     }
             
-    }  
+    // }
+
+
+    post {
+     always {
+               script {
+                 /* Use slackNotifier.groovy from shared library and provide current build result as parameter*/
+                 slackNotifier status.result
+               }
+     }
+  }  
 }
