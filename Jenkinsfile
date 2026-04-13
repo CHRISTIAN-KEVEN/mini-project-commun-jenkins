@@ -21,6 +21,32 @@ pipeline {
                 }
             }
         }
+        stage('Code Quality') {
+            agent any
+            steps {
+                script {
+                    echo 'Running Code Quality Checks...'
+                    
+                    // Professional Standard 1: Linting the Dockerfile using Hadolint
+                    sh 'docker run --rm -i hadolint/hadolint < Dockerfile'
+                    
+                    // Professional Standard 2: Static Code Analysis (SonarQube) for HTML/CSS
+                    // Note: Uncomment and configure this block if you have a SonarQube Server plugin configured in Jenkins.
+                    
+                    withSonarQubeEnv('SonarQube-Server') {
+                        def scannerHome = tool 'SonarScanner'
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${IMAGE_NAME} -Dsonar.sources=."
+                    }
+                    
+                    
+                    // Professional Standard 3: Container Vulnerability Scan using Trivy
+                    // This scans the newly built image for HIGH and CRITICAL vulnerabilities.
+                    // The --exit-code 1 flag ensures the pipeline fails if vulnerabilities are found.
+                    sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
+        
         stage('Run and test') {
             agent any
             steps {
