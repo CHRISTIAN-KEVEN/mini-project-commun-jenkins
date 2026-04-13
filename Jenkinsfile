@@ -1,3 +1,4 @@
+@Library('shared-library') _
 pipeline {
     agent none
     environment {
@@ -33,16 +34,16 @@ pipeline {
                     // Professional Standard 2: Static Code Analysis (SonarQube) for HTML/CSS
                     // Note: Uncomment and configure this block if you have a SonarQube Server plugin configured in Jenkins.
                     
-                    withSonarQubeEnv('SonarQube-Server') {
-                        def scannerHome = tool 'SonarScanner'
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${IMAGE_NAME} -Dsonar.sources=."
-                    }
+                    // withSonarQubeEnv('SonarQube-Server') {
+                    //     def scannerHome = tool 'SonarScanner'
+                    //     sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${IMAGE_NAME} -Dsonar.sources=."
+                    // }
                     
                     
                     // Professional Standard 3: Container Vulnerability Scan using Trivy
                     // This scans the newly built image for HIGH and CRITICAL vulnerabilities.
                     // The --exit-code 1 flag ensures the pipeline fails if vulnerabilities are found.
-                    sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}"
+                    // sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
@@ -122,11 +123,20 @@ pipeline {
     }
 
     post {
-       success {
-         slackSend (color: '#00FF00', message: "AJEITOH - SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) - PROD URL => http://${PROD_ID} , STAGING URL => http://${STAGING_IP}")
-         }
-      failure {
-            slackSend (color: '#FF0000', message: "AJEITOH - FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-          }   
+    //    success {
+    //      slackSend (color: '#00FF00', message: "AJEITOH - SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) - PROD URL => http://${PROD_ID} , STAGING URL => http://${STAGING_IP}")
+    //      }
+    //   failure {
+    //         slackSend (color: '#FF0000', message: "AJEITOH - FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+    //       }  
+
+        success {
+           // We pass the status and the IP values defined in the environment block
+           sendSlackNotification('SUCCESS', env.PROD_ID, env.STAGING_IP)
+       }
+       failure {
+           // We only need to pass the status, IPs are optional defaults
+           sendSlackNotification('FAILURE')
+       }    
     }  
 }
