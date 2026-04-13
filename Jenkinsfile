@@ -126,14 +126,16 @@ pipeline {
     //   failure {
     //         slackSend (color: '#FF0000', message: "AJEITOH - FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
     //       }  
-
-        success {
+        always {
+           success {
            // We pass the status and the IP values defined in the environment block
            slackNotifier('SUCCESS', env.PROD_ID, env.STAGING_IP)
        }
        failure {
            // We only need to pass the status, IPs are optional defaults
            slackNotifier('FAILURE')
-       }    
+       } 
+        }
+            
     }  
 }
