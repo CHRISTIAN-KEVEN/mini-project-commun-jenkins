@@ -93,11 +93,8 @@ pipeline {
         }
         stage('Deploy to prod') {
             when {
-                expression { env.BRANCH_NAME == 'origin/main' }
+                expression { env.BRANCH_NAME == 'origin/master' }
             }
-            // environment {
-            //     PROD_ID = "51.20.106.82" 
-            // }
             agent any
             steps {
                 sshagent(['SSH_AUTH_KEY']) {
