@@ -48,9 +48,6 @@ pipeline {
             }
         }
         stage('Deploy to stage') {
-            // environment {
-            //     STAGING_IP = "13.60.5.88"
-            // }
             agent any
             steps {
                 sshagent(['SSH_AUTH_KEY']) {
