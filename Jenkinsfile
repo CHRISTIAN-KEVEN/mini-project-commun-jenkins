@@ -14,66 +14,66 @@ pipeline {
 
     stages {
 
-        // stage('Build') {
-        //     agent any
-        //     steps {
-        //         script {
-        //             sh 'docker build -t ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG} .'
-        //         }
-        //     }
-        // }
-        // stage('Code Quality') {
-        //     agent any
-        //     steps {
-        //         script {
-        //             echo 'Running Code Quality Checks...'
+        stage('Build') {
+            agent any
+            steps {
+                script {
+                    sh 'docker build -t ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG} .'
+                }
+            }
+        }
+        stage('Code Quality') {
+            agent any
+            steps {
+                script {
+                    echo 'Running Code Quality Checks...'
                     
-        //             // Professional Standard 1: Linting the Dockerfile using Hadolint
-        //             sh 'docker run --rm -i hadolint/hadolint < Dockerfile'
+                    // Professional Standard 1: Linting the Dockerfile using Hadolint
+                    sh 'docker run --rm -i hadolint/hadolint < Dockerfile'
                     
-        //             // Professional Standard 2: Static Code Analysis (SonarQube) for HTML/CSS
-        //             // Note: Uncomment and configure this block if you have a SonarQube Server plugin configured in Jenkins.
+                    // Professional Standard 2: Static Code Analysis (SonarQube) for HTML/CSS
+                    // Note: Uncomment and configure this block if you have a SonarQube Server plugin configured in Jenkins.
                     
-        //             // withSonarQubeEnv('SonarQube-Server') {
-        //             //     def scannerHome = tool 'SonarScanner'
-        //             //     sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${IMAGE_NAME} -Dsonar.sources=."
-        //             // }
+                    // withSonarQubeEnv('SonarQube-Server') {
+                    //     def scannerHome = tool 'SonarScanner'
+                    //     sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${IMAGE_NAME} -Dsonar.sources=."
+                    // }
                     
                     
-        //             // Professional Standard 3: Container Vulnerability Scan using Trivy
-        //             // This scans the newly built image for HIGH and CRITICAL vulnerabilities.
-        //             // The --exit-code 1 flag ensures the pipeline fails if vulnerabilities are found.
-        //             // sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}"
-        //         }
-        //     }
-        // }
+                    // Professional Standard 3: Container Vulnerability Scan using Trivy
+                    // This scans the newly built image for HIGH and CRITICAL vulnerabilities.
+                    // The --exit-code 1 flag ensures the pipeline fails if vulnerabilities are found.
+                    // sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
         
-        // stage('Run and test') {
-        //     agent any
-        //     steps {
-        //         script {
-        //             sh '''
-        //                   docker rm -f ${IMAGE_NAME} || echo 'Container does not exist'
-        //                   docker run --name ${IMAGE_NAME} -d -p ${PORT_EXPOSED}:80 ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
-        //                   sleep 15
-        //                   curl http://172.17.0.1:${PORT_EXPOSED} | grep -q "A fully responsive site template designed by"
-        //             '''
-        //         }
-        //     }
-        // }
-        // stage('Clean Container and Push Image') {
-        //     agent any
-        //     steps {
-        //         script {
-        //             sh '''
-        //                 docker stop ${IMAGE_NAME}
-        //                 docker rm ${IMAGE_NAME}
-        //                 docker login -u ${DOCKERHUB_AUTH_USR} -p ${DOCKERHUB_AUTH_PSW}
-        //                 docker push ${DOCKERHUB_AUTH_USR}/${IMAGE_NAME}:${IMAGE_TAG}
-        //             '''
-        //         }
-        //     }
-        // }
+        stage('Run and test') {
+            agent any
+            steps {
+                script {
+                    sh '''
+                          docker rm -f ${IMAGE_NAME} || echo 'Container does not exist'
+                          docker run --name ${IMAGE_NAME} -d -p ${PORT_EXPOSED}:80 ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
+                          sleep 15
+                          curl http://172.17.0.1:${PORT_EXPOSED} | grep -q "A fully responsive site template designed by"
+                    '''
+                }
+            }
+        }
+        stage('Clean Container and Push Image') {
+            agent any
+            steps {
+                script {
+                    sh '''
+                        docker stop ${IMAGE_NAME}
+                        docker rm ${IMAGE_NAME}
+                        docker login -u ${DOCKERHUB_AUTH_USR} -p ${DOCKERHUB_AUTH_PSW}
+                        docker push ${DOCKERHUB_AUTH_USR}/${IMAGE_NAME}:${IMAGE_TAG}
+                    '''
+                }
+            }
+        }
         stage('Deploy to stage') {
             agent any
             steps {
